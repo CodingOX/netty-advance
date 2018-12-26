@@ -32,17 +32,16 @@ public final class ClientPool {
     static final String HOST = System.getProperty("host", "127.0.0.1");
     static final int PORT = Integer.parseInt(System.getProperty("port", "18081"));
 
-    public static void main(String[] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
 //        TimeUnit.SECONDS.sleep(30);
         initClientPool(100);
     }
 
-    static void initClientPool(int poolSize) throws Exception
-    {
+    static void initClientPool(int poolSize) throws Exception {
         EventLoopGroup group = new NioEventLoopGroup();
         Bootstrap b = new Bootstrap();
         b.group(group)
+                //如果是服务端，这是 NioServerSocketChannel
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.TCP_NODELAY, true)
                 .handler(new ChannelInitializer<SocketChannel>() {
@@ -52,8 +51,7 @@ public final class ClientPool {
                         p.addLast(new LoggingHandler());
                     }
                 });
-        for(int i = 0; i < poolSize; i++)
-        {
+        for (int i = 0; i < poolSize; i++) {
             b.connect(HOST, PORT).sync();
         }
     }
