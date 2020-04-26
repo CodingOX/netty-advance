@@ -20,44 +20,44 @@ import java.util.concurrent.ExecutionException;
  */
 public class HttpClient {
 
-	private Channel channel;
     HttpClientHandler handler = new HttpClientHandler();
-	private void connect(String host, int port) throws Exception {
-        EventLoopGroup workerGroup = new NioEventLoopGroup(1);
-            Bootstrap b = new Bootstrap();
-            b.group(workerGroup);
-            b.channel(NioSocketChannel.class);
-            b.handler(new ChannelInitializer<SocketChannel>() {
-                @Override
-                public void initChannel(SocketChannel ch) throws Exception {
-                    ch.pipeline().addLast(new HttpClientCodec());
-                    ch.pipeline().addLast(new HttpObjectAggregator(Short.MAX_VALUE));
-                    ch.pipeline().addLast(handler);
-                }
-            });            
-            ChannelFuture f = b.connect(host, port).sync();
-            channel = f.channel();
-        
-    }
-	
-	private HttpResponse blockSend(FullHttpRequest request) throws InterruptedException, ExecutionException
-	{
-          request.headers().set(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
-          DefaultPromise<HttpResponse> respPromise = new DefaultPromise<HttpResponse>(channel.eventLoop());
-          handler.setRespPromise(respPromise);
-          channel.writeAndFlush(request);
-          HttpResponse response = respPromise.get();
-          if (response != null)
-        	  System.out.print("The client received http response, the body is :" + new String(response.body()));
-          return response;
-	}
+    private Channel channel;
 
     public static void main(String[] args) throws Exception {
-    	HttpClient client = new HttpClient();
+        HttpClient client = new HttpClient();
         client.connect("127.0.0.1", 18084);
         ByteBuf body = Unpooled.wrappedBuffer("Http message!".getBytes("UTF-8"));
         DefaultFullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET,
                 "http://127.0.0.1/user?id=10&addr=NanJing", body);
         HttpResponse response = client.blockSend(request);
+    }
+
+    private void connect(String host, int port) throws Exception {
+        EventLoopGroup workerGroup = new NioEventLoopGroup(1);
+        Bootstrap b = new Bootstrap();
+        b.group(workerGroup);
+        b.channel(NioSocketChannel.class);
+        b.handler(new ChannelInitializer<SocketChannel>() {
+            @Override
+            public void initChannel(SocketChannel ch) throws Exception {
+                ch.pipeline().addLast(new HttpClientCodec());
+                ch.pipeline().addLast(new HttpObjectAggregator(Short.MAX_VALUE));
+                ch.pipeline().addLast(handler);
+            }
+        });
+        ChannelFuture f = b.connect(host, port).sync();
+        channel = f.channel();
+
+    }
+
+    private HttpResponse blockSend(FullHttpRequest request) throws InterruptedException, ExecutionException {
+        request.headers().set(HttpHeaderNames.CONTENT_LENGTH, request.content().readableBytes());
+        DefaultPromise<HttpResponse> respPromise = new DefaultPromise<HttpResponse>(channel.eventLoop());
+        handler.setRespPromise(respPromise);
+        channel.writeAndFlush(request);
+        HttpResponse response = respPromise.get();
+        if (response != null)
+            System.out.print("The client received http response, the body is :" + new String(response.body()));
+        return response;
     }
 }

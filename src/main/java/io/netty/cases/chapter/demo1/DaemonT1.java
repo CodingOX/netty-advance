@@ -1,10 +1,9 @@
 package io.netty.cases.chapter.demo1;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by 鏉庢灄宄� on 2018/8/3.
+ * Created by 李林峰 on 2018/8/3.
  */
 public class DaemonT1 {
     public static void main(String[] args)

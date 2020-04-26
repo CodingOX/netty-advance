@@ -29,16 +29,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class ConcurrentPerformanceClientHandlerV2 extends ChannelInboundHandlerAdapter {
     static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        scheduledExecutorService.scheduleAtFixedRate(()->
+        scheduledExecutorService.scheduleAtFixedRate(() ->
         {
-                ByteBuf firstMessage = Unpooled.buffer(ConcurrentPerformanceClient.MSG_SIZE);
-                for (int k = 0;  k < firstMessage.capacity();  k ++) {
-                    firstMessage.writeByte((byte) k);
-                }
-                ctx.writeAndFlush(firstMessage);
-        },0,1000, TimeUnit.MILLISECONDS);
+            ByteBuf firstMessage = Unpooled.buffer(ConcurrentPerformanceClient.MSG_SIZE);
+            for (int k = 0; k < firstMessage.capacity(); k++) {
+                firstMessage.writeByte((byte) k);
+            }
+            ctx.writeAndFlush(firstMessage);
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     @Override

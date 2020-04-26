@@ -19,7 +19,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
-import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,20 +28,20 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by 李林峰 on 2018/8/19.
  */
 public class ServiceTraceServerHandler extends ChannelInboundHandlerAdapter {
-    AtomicInteger totalSendBytes = new AtomicInteger(0);
     static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+    AtomicInteger totalSendBytes = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        scheduledExecutorService.scheduleAtFixedRate(()->
+        scheduledExecutorService.scheduleAtFixedRate(() ->
         {
             int qps = totalSendBytes.getAndSet(0);
             System.out.println("The server write rate is : " + qps + " bytes/s");
-        },0,1000, TimeUnit.MILLISECONDS);
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        int sendBytes = ((ByteBuf)msg).readableBytes();
+        int sendBytes = ((ByteBuf) msg).readableBytes();
         ctx.writeAndFlush(msg);
         totalSendBytes.getAndAdd(sendBytes);
     }

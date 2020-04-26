@@ -17,11 +17,8 @@ package io.netty.cases.chapter.demo3;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -32,12 +29,13 @@ import java.util.concurrent.Executors;
 public class RouterServerHandler extends ChannelInboundHandlerAdapter {
     static ExecutorService executorService = Executors.newSingleThreadExecutor();
     PooledByteBufAllocator allocator = new PooledByteBufAllocator(false);
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ByteBuf reqMsg = (ByteBuf)msg;
-        byte [] body = new byte[reqMsg.readableBytes()];
+        ByteBuf reqMsg = (ByteBuf) msg;
+        byte[] body = new byte[reqMsg.readableBytes()];
 //        ReferenceCountUtil.release(reqMsg);
-        executorService.execute(()->
+        executorService.execute(() ->
         {
             //瑙ｆ瀽璇锋眰娑堟伅锛屽仛璺敱杞彂锛屼唬鐮佺渷鐣�...
             //杞彂鎴愬姛锛岃繑鍥炲搷搴旂粰瀹㈡埛绔�
@@ -46,6 +44,7 @@ public class RouterServerHandler extends ChannelInboundHandlerAdapter {
             ctx.writeAndFlush(respMsg);
         });
     }
+
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         cause.printStackTrace();

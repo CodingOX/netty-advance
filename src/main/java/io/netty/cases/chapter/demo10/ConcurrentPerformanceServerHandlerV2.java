@@ -37,27 +37,24 @@ public class ConcurrentPerformanceServerHandlerV2 extends ChannelInboundHandlerA
     static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     static ExecutorService executorService = Executors.newFixedThreadPool(100);
 
-    public ConcurrentPerformanceServerHandlerV2()
-    {
-        scheduledExecutorService.scheduleAtFixedRate(()->
+    public ConcurrentPerformanceServerHandlerV2() {
+        scheduledExecutorService.scheduleAtFixedRate(() ->
         {
             int qps = counter.getAndSet(0);
             System.out.println("The server QPS is : " + qps);
-        },0,1000, TimeUnit.MILLISECONDS);
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        ((ByteBuf)msg).release();
-        executorService.execute(()->
+        ((ByteBuf) msg).release();
+        executorService.execute(() ->
         {
             counter.incrementAndGet();
             //业务逻辑处理，模拟业务访问DB、缓存等，时延从100-1000毫秒之间不等
             Random random = new Random();
-            try
-            {
+            try {
                 TimeUnit.MILLISECONDS.sleep(random.nextInt(1000));
-            }catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         });

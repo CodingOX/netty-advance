@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 public class EchoExitServer3 {
 
     static Logger logger = Logger.getLogger(EchoExitServer3.class.getName());
+
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();

@@ -1,7 +1,6 @@
 package io.netty.cases.chapter.demo1;
 
 import sun.misc.Signal;
-import sun.misc.SignalHandler;
 
 import java.util.concurrent.TimeUnit;
 
@@ -10,18 +9,17 @@ import java.util.concurrent.TimeUnit;
  */
 public class SignalHandlerTest {
 
-    public static void main(String [] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
         Signal sig = new Signal("INT");//以windows操作系统为例
-        Signal.handle(sig, (s)->{
+        Signal.handle(sig, (s) -> {
             System.out.println("Signal handle start...");
             try {
-            TimeUnit.SECONDS.sleep(Integer.MAX_VALUE);
+                TimeUnit.SECONDS.sleep(Integer.MAX_VALUE);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         });
-        Runtime.getRuntime().addShutdownHook(new Thread(()->
+        Runtime.getRuntime().addShutdownHook(new Thread(() ->
         {
             System.out.println("ShutdownHook execute start...");
             System.out.println("Netty NioEventLoopGroup shutdownGracefully...");
@@ -31,13 +29,15 @@ public class SignalHandlerTest {
                 e.printStackTrace();
             }
             System.out.println("ShutdownHook execute end...");
-        },""));
+        }, ""));
         new Thread(new Runnable() {
             public void run() {
                 try {
                     TimeUnit.DAYS.sleep(Long.MAX_VALUE);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();}}
+                    e.printStackTrace();
+                }
+            }
         }, "Daemon-T").start();
     }
 }

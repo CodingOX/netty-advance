@@ -33,29 +33,28 @@ public class ServiceTraceClient {
     static final int PORT = Integer.parseInt(System.getProperty("port", "18089"));
     static final int MSG_SIZE = 256;
 
-    public void run() throws Exception  {
-			connect();
+    public static void main(String[] args) throws Exception {
+        new ServiceTraceClient().run();
     }
-    
-    public void connect() throws Exception
-    {
+
+    public void run() throws Exception {
+        connect();
+    }
+
+    public void connect() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup(8);
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-             .option(ChannelOption.TCP_NODELAY, true)
-             .handler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(new ServiceTraceClientHandler());
-                 }
-             });
+        Bootstrap b = new Bootstrap();
+        b.group(group)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new ServiceTraceClientHandler());
+                    }
+                });
         ChannelFuture f = b.connect(HOST, PORT).sync();
         f.channel().closeFuture().sync();
         group.shutdownGracefully();
-        }
-
-    public static void main(String[] args) throws Exception {
-        new ServiceTraceClient().run();
     }
 }

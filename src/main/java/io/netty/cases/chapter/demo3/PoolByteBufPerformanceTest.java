@@ -9,19 +9,17 @@ import io.netty.buffer.Unpooled;
  */
 public class PoolByteBufPerformanceTest {
 
-    public static void main(String [] args)
-    {
+    public static void main(String[] args) {
 //        unPoolTest();
         poolTest();
     }
-    static void unPoolTest()
-    {
+
+    static void unPoolTest() {
         //非内存池模式
         long beginTime = System.currentTimeMillis();
         ByteBuf buf = null;
         int maxTimes = 100000000;
-        for(int i = 0; i < maxTimes; i++)
-        {
+        for (int i = 0; i < maxTimes; i++) {
             buf = Unpooled.buffer(10 * 1024);
             buf.release();
         }
@@ -29,15 +27,13 @@ public class PoolByteBufPerformanceTest {
                 + (System.currentTimeMillis() - beginTime));
     }
 
-    static void poolTest()
-    {
+    static void poolTest() {
         //内存池模式
         PooledByteBufAllocator allocator = new PooledByteBufAllocator(false);
         long beginTime = System.currentTimeMillis();
         ByteBuf buf = null;
         int maxTimes = 100000000;
-        for(int i = 0; i < maxTimes; i++)
-        {
+        for (int i = 0; i < maxTimes; i++) {
             buf = allocator.heapBuffer(10 * 1024);
             buf.release();
         }

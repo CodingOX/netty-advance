@@ -32,7 +32,7 @@ public class RouterClientHandler extends ChannelInboundHandlerAdapter {
      */
     public RouterClientHandler() {
         firstMessage = Unpooled.buffer(1024);
-        for (int i = 0; i < firstMessage.capacity(); i ++) {
+        for (int i = 0; i < firstMessage.capacity(); i++) {
             firstMessage.writeByte((byte) i);
         }
     }
@@ -49,7 +49,7 @@ public class RouterClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-       ctx.flush();
+        ctx.flush();
     }
 
     @Override

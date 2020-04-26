@@ -17,14 +17,13 @@ public class RestfulReq {
 
     private HttpVersion version;
 
-    private byte [] body;
+    private final byte[] body;
 
-    public RestfulReq(byte [] body)
-    {
+    public RestfulReq(byte[] body) {
         this.body = body;
     }
 
-    public byte [] body() {
+    public byte[] body() {
         if (this.body != null)
             return Arrays.copyOf(this.body, this.body.length);
         return null;

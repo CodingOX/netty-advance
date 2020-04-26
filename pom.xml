@@ -8,9 +8,11 @@
     <artifactId>case-analysis</artifactId>
     <version>1.0.1</version>
 
-<dependencies><dependency>
-    <groupId>io.netty</groupId>
-    <artifactId>netty-all</artifactId>
-    <version>4.1.28.Final</version>
-</dependency></dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.49.Final</version>
+        </dependency>
+    </dependencies>
 </project>

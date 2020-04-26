@@ -23,7 +23,6 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.concurrent.DefaultEventExecutor;
 import io.netty.util.concurrent.DefaultEventExecutorGroup;
 import io.netty.util.concurrent.EventExecutorGroup;
 
@@ -33,7 +32,8 @@ import io.netty.util.concurrent.EventExecutorGroup;
 public final class ConcurrentPerformanceServer {
 
     static final int PORT = Integer.parseInt(System.getProperty("port", "18088"));
-      static final EventExecutorGroup executor = new DefaultEventExecutorGroup(100);
+    static final EventExecutorGroup executor = new DefaultEventExecutorGroup(100);
+
     public static void main(String[] args) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup();
@@ -41,19 +41,19 @@ public final class ConcurrentPerformanceServer {
             ServerBootstrap b = new ServerBootstrap();
             ChannelHandler serviceHandler = new ConcurrentPerformanceServerHandlerV2();
             b.group(bossGroup, workerGroup)
-             .channel(NioServerSocketChannel.class)
-             .option(ChannelOption.SO_BACKLOG, 100)
-             .handler(new LoggingHandler(LogLevel.INFO))
-             .childHandler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 public void initChannel(SocketChannel ch) throws Exception {
-                     ch.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
-                     ChannelPipeline p = ch.pipeline();
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 100)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch) throws Exception {
+                            ch.config().setAllocator(UnpooledByteBufAllocator.DEFAULT);
+                            ChannelPipeline p = ch.pipeline();
 //                     p.addLast(executor, new ServiceTraceServerHandler());
-                     p.addLast(serviceHandler);
-                 }
-             }).childOption(ChannelOption.SO_RCVBUF, 8 * 1024)
-            .childOption(ChannelOption.SO_SNDBUF, 8 * 1024);
+                            p.addLast(serviceHandler);
+                        }
+                    }).childOption(ChannelOption.SO_RCVBUF, 8 * 1024)
+                    .childOption(ChannelOption.SO_SNDBUF, 8 * 1024);
             ChannelFuture f = b.bind(PORT).sync();
             f.channel().closeFuture().sync();
         } finally {

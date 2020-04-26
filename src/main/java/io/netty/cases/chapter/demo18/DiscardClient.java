@@ -16,7 +16,10 @@
 package io.netty.cases.chapter.demo18;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
@@ -24,8 +27,6 @@ import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,24 +43,23 @@ public final class DiscardClient {
         final SslContext sslCtx = SslContextBuilder.forClient()
                 .trustManager(InsecureTrustManagerFactory.INSTANCE).build();
         EventLoopGroup group = new NioEventLoopGroup();
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-                    .option(ChannelOption.SO_REUSEADDR,true)
-             .handler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 protected void initChannel(SocketChannel ch) throws Exception {
-                     ChannelPipeline p = ch.pipeline();
-                     if (sslCtx != null) {
-                         p.addLast(sslCtx.newHandler(ch.alloc()));
-                     }
-                     p.addLast(new DiscardClientHandler());
-                 }
-             });
-            for(int i = 0; i < 30000; i++)
-            {
-                b.connect(HOST, PORT).sync();
-                TimeUnit.MILLISECONDS.sleep(100);
-            }
+        Bootstrap b = new Bootstrap();
+        b.group(group)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.SO_REUSEADDR, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    protected void initChannel(SocketChannel ch) throws Exception {
+                        ChannelPipeline p = ch.pipeline();
+                        if (sslCtx != null) {
+                            p.addLast(sslCtx.newHandler(ch.alloc()));
+                        }
+                        p.addLast(new DiscardClientHandler());
+                    }
+                });
+        for (int i = 0; i < 30000; i++) {
+            b.connect(HOST, PORT).sync();
+            TimeUnit.MILLISECONDS.sleep(100);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package io.netty.cases.chapter.demo4;
 
@@ -19,32 +19,32 @@ import io.netty.handler.codec.http.HttpServerCodec;
  */
 public class HttpServer {
 
-	private void bind(int port) throws Exception {
+    public static void main(String[] args) throws Exception {
+        HttpServer server = new HttpServer();
+        int port = 18084;
+        System.out.println("HTTP server listening on " + port);
+        server.bind(port);
+    }
+
+    private void bind(int port) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(bossGroup, workerGroup).channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
-                                @Override
-                                public void initChannel(SocketChannel ch) throws Exception {
-                                    ch.pipeline().addLast(new HttpServerCodec());
-                                    ch.pipeline().addLast(new HttpObjectAggregator(Short.MAX_VALUE));
-                                    ch.pipeline().addLast(new HttpServerHandler());
-                                }
-                            }).option(ChannelOption.SO_BACKLOG, 128);
-            ChannelFuture f = b.bind("127.0.0.1",port).sync();
+                        @Override
+                        public void initChannel(SocketChannel ch) throws Exception {
+                            ch.pipeline().addLast(new HttpServerCodec());
+                            ch.pipeline().addLast(new HttpObjectAggregator(Short.MAX_VALUE));
+                            ch.pipeline().addLast(new HttpServerHandler());
+                        }
+                    }).option(ChannelOption.SO_BACKLOG, 128);
+            ChannelFuture f = b.bind("127.0.0.1", port).sync();
             f.channel().closeFuture().sync();
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        HttpServer server = new HttpServer();
-    	int port = 18084;
-    	System.out.println("HTTP server listening on " + port);
-        server.bind(port);
     }
 }

@@ -35,50 +35,50 @@ import io.netty.handler.traffic.ChannelTrafficShapingHandler;
  * Created by 鏉庢灄宄� on 2018/9/2
  */
 public class TrafficShappingServer {
-    public void bind(int port) throws Exception {
-	// 閰嶇疆鏈嶅姟绔殑NIO绾跨▼缁�
-	EventLoopGroup bossGroup = new NioEventLoopGroup();
-	EventLoopGroup workerGroup = new NioEventLoopGroup();
-	try {
-	    ServerBootstrap b = new ServerBootstrap();
-	    b.group(bossGroup, workerGroup)
-		    .channel(NioServerSocketChannel.class)
-		    .option(ChannelOption.SO_BACKLOG, 100)
-		    .handler(new LoggingHandler(LogLevel.INFO))
-		    .childHandler(new ChannelInitializer<SocketChannel>() {
-			@Override
-			public void initChannel(SocketChannel ch)
-				throws Exception {
-				ch.pipeline().addLast("Channel Traffic Shaping",new ChannelTrafficShapingHandler(1024 * 1024,1024 * 1024, 1000));
-			    ByteBuf delimiter = Unpooled.copiedBuffer("$_"
-				    .getBytes());
-			    ch.pipeline().addLast(
-				    new DelimiterBasedFrameDecoder(2048 * 1024,
-					    delimiter));
-			    ch.pipeline().addLast(new StringDecoder());
-			    ch.pipeline().addLast(new TrafficShapingServerHandler());
-			}
-		    });
-	    // 缁戝畾绔彛锛屽悓姝ョ瓑寰呮垚鍔�
-	    ChannelFuture f = b.bind(port).sync();
-	    // 绛夊緟鏈嶅姟绔洃鍚鍙ｅ叧闂�
-	    f.channel().closeFuture().sync();
-	} finally {
-	    // 浼橀泤閫�鍑猴紝閲婃斁绾跨▼姹犺祫婧�
-	    bossGroup.shutdownGracefully();
-	    workerGroup.shutdownGracefully();
-	}
+    public static void main(String[] args) throws Exception {
+        int port = 18091;
+        if (args != null && args.length > 0) {
+            try {
+                port = Integer.valueOf(args[0]);
+            } catch (NumberFormatException e) {
+                // 閲囩敤榛樿鍊�
+            }
+        }
+        new TrafficShappingServer().bind(port);
     }
 
-    public static void main(String[] args) throws Exception {
-	int port = 18091;
-	if (args != null && args.length > 0) {
-	    try {
-		port = Integer.valueOf(args[0]);
-	    } catch (NumberFormatException e) {
-		// 閲囩敤榛樿鍊�
-	    }
-	}
-	new TrafficShappingServer().bind(port);
+    public void bind(int port) throws Exception {
+        // 閰嶇疆鏈嶅姟绔殑NIO绾跨▼缁�
+        EventLoopGroup bossGroup = new NioEventLoopGroup();
+        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(bossGroup, workerGroup)
+                    .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 100)
+                    .handler(new LoggingHandler(LogLevel.INFO))
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        @Override
+                        public void initChannel(SocketChannel ch)
+                                throws Exception {
+                            ch.pipeline().addLast("Channel Traffic Shaping", new ChannelTrafficShapingHandler(1024 * 1024, 1024 * 1024, 1000));
+                            ByteBuf delimiter = Unpooled.copiedBuffer("$_"
+                                    .getBytes());
+                            ch.pipeline().addLast(
+                                    new DelimiterBasedFrameDecoder(2048 * 1024,
+                                            delimiter));
+                            ch.pipeline().addLast(new StringDecoder());
+                            ch.pipeline().addLast(new TrafficShapingServerHandler());
+                        }
+                    });
+            // 缁戝畾绔彛锛屽悓姝ョ瓑寰呮垚鍔�
+            ChannelFuture f = b.bind(port).sync();
+            // 绛夊緟鏈嶅姟绔洃鍚鍙ｅ叧闂�
+            f.channel().closeFuture().sync();
+        } finally {
+            // 浼橀泤閫�鍑猴紝閲婃斁绾跨▼姹犺祫婧�
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 }

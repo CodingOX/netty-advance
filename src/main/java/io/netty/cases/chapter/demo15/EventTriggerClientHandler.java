@@ -16,12 +16,9 @@
 package io.netty.cases.chapter.demo15;
 
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
 
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -32,31 +29,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class EventTriggerClientHandler extends ChannelInboundHandlerAdapter {
 
-    private static AtomicInteger SEQ = new AtomicInteger(0);
-
     static final String ECHO_REQ = "Hi,welcome to Netty ";
-
     static final String DELIMITER = "$_";
-
     static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private static final AtomicInteger SEQ = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
         scheduledExecutorService.scheduleAtFixedRate(()
-        ->{
+                -> {
             int counter = SEQ.incrementAndGet();
-            if (counter % 10 == 0)
-            {
+            if (counter % 10 == 0) {
                 ctx.writeAndFlush(Unpooled.copiedBuffer((ECHO_REQ + DELIMITER).getBytes()));
-            }
-            else
+            } else
                 ctx.writeAndFlush(Unpooled.copiedBuffer(ECHO_REQ.getBytes()));
-        },0,1000, TimeUnit.MILLISECONDS);
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-	cause.printStackTrace();
-	ctx.close();
+        cause.printStackTrace();
+        ctx.close();
     }
 }

@@ -42,6 +42,6 @@ public class DiscardServerHandler extends SimpleChannelInboundHandler<Object> {
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt == SslHandshakeCompletionEvent.SUCCESS)
-            HttpSessions.channelMap.put(ctx.channel().id().toString(), (NioSocketChannel)ctx.channel());
+            HttpSessions.channelMap.put(ctx.channel().id().toString(), (NioSocketChannel) ctx.channel());
     }
 }

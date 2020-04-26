@@ -28,22 +28,18 @@ import java.util.concurrent.TimeUnit;
 public class IotCarsClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx)
-    {
-        new Thread(()->
+    public void channelActive(ChannelHandlerContext ctx) {
+        new Thread(() ->
         {
-            while (true)
-            {
+            while (true) {
                 ByteBuf firstMessage = Unpooled.buffer(IotCarsClient.MSG_SIZE);
-                for (int i = 0; i < firstMessage.capacity(); i ++) {
+                for (int i = 0; i < firstMessage.capacity(); i++) {
                     firstMessage.writeByte((byte) i);
                 }
                 ctx.writeAndFlush(firstMessage);
-                try
-                {
+                try {
                     TimeUnit.MILLISECONDS.sleep(1);
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }

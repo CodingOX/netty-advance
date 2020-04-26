@@ -16,8 +16,6 @@
 package io.netty.cases.chapter.demo18;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -28,9 +26,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class DiscardClientHandler extends SimpleChannelInboundHandler<Object> {
 
+    static AtomicInteger sum = new AtomicInteger(0);
     private ByteBuf content;
     private ChannelHandlerContext ctx;
-    static AtomicInteger sum = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {

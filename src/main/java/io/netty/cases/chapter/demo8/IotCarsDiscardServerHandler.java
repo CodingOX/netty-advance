@@ -30,23 +30,21 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by 李林峰 on 2018/8/18.
  */
 public class IotCarsDiscardServerHandler extends ChannelInboundHandlerAdapter {
-    static AtomicInteger sum  = new AtomicInteger(0);
-    static ExecutorService executorService = new ThreadPoolExecutor(1,3,30, TimeUnit.SECONDS,
-            new ArrayBlockingQueue<Runnable>(1000),new ThreadPoolExecutor.DiscardPolicy());
+    static AtomicInteger sum = new AtomicInteger(0);
+    static ExecutorService executorService = new ThreadPoolExecutor(1, 3, 30, TimeUnit.SECONDS,
+            new ArrayBlockingQueue<Runnable>(1000), new ThreadPoolExecutor.DiscardPolicy());
+
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.println(new Date() + "--> Server receive client message : " + sum.incrementAndGet());
-        executorService.execute(()->
+        executorService.execute(() ->
         {
             ByteBuf req = (ByteBuf) msg;
             //其它业务逻辑处理，访问数据库
-            if (sum.get() % 100 == 0 || (Thread.currentThread()== ctx.channel().eventLoop()))
-                try
-                {
+            if (sum.get() % 100 == 0 || (Thread.currentThread() == ctx.channel().eventLoop()))
+                try {
                     //访问数据库，模拟偶现的数据库慢，同步阻塞15秒
                     TimeUnit.SECONDS.sleep(15);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             //转发消息，此处代码省略，转发成功之后返回响应给终端

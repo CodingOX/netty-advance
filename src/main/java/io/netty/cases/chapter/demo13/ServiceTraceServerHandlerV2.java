@@ -24,7 +24,6 @@ import io.netty.util.concurrent.EventExecutor;
 import io.netty.util.concurrent.SingleThreadEventExecutor;
 
 import java.util.Iterator;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -34,41 +33,40 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Created by 李林峰 on 2018/8/19.
  */
 public class ServiceTraceServerHandlerV2 extends ChannelInboundHandlerAdapter {
-    AtomicInteger totalSendBytes = new AtomicInteger(0);
     static ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
     static ScheduledExecutorService kpiExecutorService = Executors.newSingleThreadScheduledExecutor();
     static ScheduledExecutorService writeQueKpiExecutorService = Executors.newSingleThreadScheduledExecutor();
+    AtomicInteger totalSendBytes = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        scheduledExecutorService.scheduleAtFixedRate(()->
+        scheduledExecutorService.scheduleAtFixedRate(() ->
         {
             int qps = totalSendBytes.getAndSet(0);
             System.out.println("The server write rate is : " + qps + " bytes/s");
-        },0,1000, TimeUnit.MILLISECONDS);
-        kpiExecutorService.scheduleAtFixedRate(()->
+        }, 0, 1000, TimeUnit.MILLISECONDS);
+        kpiExecutorService.scheduleAtFixedRate(() ->
         {
             Iterator<EventExecutor> executorGroups = ctx.executor().parent().iterator();
-            while (executorGroups.hasNext())
-            {
-                SingleThreadEventExecutor executor = (SingleThreadEventExecutor)executorGroups.next();
+            while (executorGroups.hasNext()) {
+                SingleThreadEventExecutor executor = (SingleThreadEventExecutor) executorGroups.next();
                 int size = executor.pendingTasks();
                 if (executor == ctx.executor())
                     System.out.println(ctx.channel() + "--> " + executor + " pending size in queue is : --> " + size);
                 else
                     System.out.println(executor + " pending size in queue is : --> " + size);
             }
-        },0,1000, TimeUnit.MILLISECONDS);
-        writeQueKpiExecutorService.scheduleAtFixedRate(()->
+        }, 0, 1000, TimeUnit.MILLISECONDS);
+        writeQueKpiExecutorService.scheduleAtFixedRate(() ->
         {
-            long pendingSize = ((NioSocketChannel)ctx.channel()).unsafe().outboundBuffer().totalPendingWriteBytes();
+            long pendingSize = ((NioSocketChannel) ctx.channel()).unsafe().outboundBuffer().totalPendingWriteBytes();
             System.out.println(ctx.channel() + "--> " + " ChannelOutboundBuffer's totalPendingWriteBytes is : "
                     + pendingSize + " bytes");
-        },0,1000, TimeUnit.MILLISECONDS);
+        }, 0, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        int sendBytes = ((ByteBuf)msg).readableBytes();
+        int sendBytes = ((ByteBuf) msg).readableBytes();
         ChannelFuture writeFuture = ctx.write(msg);
         writeFuture.addListener((f) ->
         {

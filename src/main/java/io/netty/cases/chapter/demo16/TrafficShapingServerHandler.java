@@ -34,9 +34,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 @Sharable
 public class TrafficShapingServerHandler extends ChannelInboundHandlerAdapter {
 
-    AtomicInteger counter = new AtomicInteger(0);
-
     static ScheduledExecutorService es = Executors.newScheduledThreadPool(1);
+    AtomicInteger counter = new AtomicInteger(0);
 
     public TrafficShapingServerHandler() {
         es.scheduleAtFixedRate(() ->

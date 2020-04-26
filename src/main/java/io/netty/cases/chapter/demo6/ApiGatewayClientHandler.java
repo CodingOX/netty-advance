@@ -29,7 +29,7 @@ public class ApiGatewayClientHandler extends ChannelInboundHandlerAdapter {
 
     public ApiGatewayClientHandler() {
         firstMessage = Unpooled.buffer(ApiGatewayClient.MSG_SIZE);
-        for (int i = 0; i < firstMessage.capacity(); i ++) {
+        for (int i = 0; i < firstMessage.capacity(); i++) {
             firstMessage.writeByte((byte) i);
         }
     }
@@ -46,7 +46,7 @@ public class ApiGatewayClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-       ctx.flush();
+        ctx.flush();
     }
 
     @Override

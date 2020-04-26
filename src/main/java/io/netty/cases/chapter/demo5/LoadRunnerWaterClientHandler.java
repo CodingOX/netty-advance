@@ -30,17 +30,12 @@ import java.util.logging.Logger;
  */
 public class LoadRunnerWaterClientHandler extends ChannelInboundHandlerAdapter {
 
-    private final ByteBuf firstMessage;
-
-    Runnable loadRunner;
-
-    AtomicLong sendSum = new AtomicLong(0);
-
-    Runnable profileMonitor;
-
-    static Logger LOG = Logger.getLogger(LoadRunnerWaterClientHandler.class.getName());
-
     static final int SIZE = Integer.parseInt(System.getProperty("size", "256"));
+    static Logger LOG = Logger.getLogger(LoadRunnerWaterClientHandler.class.getName());
+    private final ByteBuf firstMessage;
+    Runnable loadRunner;
+    AtomicLong sendSum = new AtomicLong(0);
+    Runnable profileMonitor;
 
     /**
      * Creates a client-side handler.

@@ -16,7 +16,6 @@
 package io.netty.cases.chapter.demo10;
 
 import io.netty.bootstrap.Bootstrap;
-import io.netty.cases.chapter.demo8.IotCarsClientHandler;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
@@ -24,7 +23,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import io.netty.handler.logging.LoggingHandler;
 
 /**
  * Created by 李林峰 on 2018/8/19.
@@ -35,29 +33,28 @@ public class ConcurrentPerformanceClient {
     static final int PORT = Integer.parseInt(System.getProperty("port", "18088"));
     static final int MSG_SIZE = 256;
 
-    public void run() throws Exception  {
-			connect();
+    public static void main(String[] args) throws Exception {
+        new ConcurrentPerformanceClient().run();
     }
-    
-    public void connect() throws Exception
-    {
+
+    public void run() throws Exception {
+        connect();
+    }
+
+    public void connect() throws Exception {
         EventLoopGroup group = new NioEventLoopGroup(8);
-            Bootstrap b = new Bootstrap();
-            b.group(group)
-             .channel(NioSocketChannel.class)
-             .option(ChannelOption.TCP_NODELAY, true)
-             .handler(new ChannelInitializer<SocketChannel>() {
-                 @Override
-                 public void initChannel(SocketChannel ch) throws Exception {
-                     ch.pipeline().addLast(new ConcurrentPerformanceClientHandler());
-                 }
-             });
+        Bootstrap b = new Bootstrap();
+        b.group(group)
+                .channel(NioSocketChannel.class)
+                .option(ChannelOption.TCP_NODELAY, true)
+                .handler(new ChannelInitializer<SocketChannel>() {
+                    @Override
+                    public void initChannel(SocketChannel ch) throws Exception {
+                        ch.pipeline().addLast(new ConcurrentPerformanceClientHandler());
+                    }
+                });
         ChannelFuture f = b.connect(HOST, PORT).sync();
         f.channel().closeFuture().sync();
         group.shutdownGracefully();
-        }
-
-    public static void main(String[] args) throws Exception {
-        new ConcurrentPerformanceClient().run();
     }
 }

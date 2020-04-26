@@ -3,7 +3,7 @@ package io.netty.cases.chapter.demo12;
 /**
  * Created by 李林峰 on 2018/8/27.
  */
-public class Address implements Cloneable{
+public class Address implements Cloneable {
 
     private String city;
 
@@ -15,8 +15,7 @@ public class Address implements Cloneable{
         this.city = city;
     }
 
-    public Object clone() throws CloneNotSupportedException
-    {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

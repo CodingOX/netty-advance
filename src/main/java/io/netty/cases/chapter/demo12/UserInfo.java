@@ -3,7 +3,7 @@ package io.netty.cases.chapter.demo12;
 /**
  * Created by 李林峰 on 2018/8/27.
  */
-public class UserInfo implements Cloneable{
+public class UserInfo implements Cloneable {
 
     private int age;
 
@@ -25,8 +25,7 @@ public class UserInfo implements Cloneable{
         this.address = address;
     }
 
-    public Object clone() throws CloneNotSupportedException
-    {
+    public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
 

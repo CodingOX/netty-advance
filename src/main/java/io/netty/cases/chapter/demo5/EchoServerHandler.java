@@ -16,11 +16,8 @@
 package io.netty.cases.chapter.demo5;
 
 import io.netty.channel.ChannelHandler.Sharable;
-import io.netty.channel.ChannelHandlerAdapter;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by 李林峰 on 2018/8/11.

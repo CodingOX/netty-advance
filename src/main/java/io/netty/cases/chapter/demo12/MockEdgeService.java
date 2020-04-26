@@ -2,7 +2,6 @@ package io.netty.cases.chapter.demo12;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.buffer.UnpooledHeapByteBuf;
 
 import java.util.concurrent.TimeUnit;
 
@@ -11,47 +10,40 @@ import java.util.concurrent.TimeUnit;
  */
 public class MockEdgeService {
 
-    public static void main(String [] args) throws Exception
-    {
+    public static void main(String[] args) throws Exception {
 //        testHotMethod();
         testCopyHotMethod();
 //        testReferenceHotMethod();
     }
 
-    static void testHotMethod() throws Exception
-    {
+    static void testHotMethod() throws Exception {
         ByteBuf buf = Unpooled.buffer(1024);
-        for(int i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++)
             buf.writeByte(i);
         RestfulReq req = new RestfulReq(buf.array());
-        while (true)
-        {
-            byte [] msgReq = req.body();
+        while (true) {
+            byte[] msgReq = req.body();
             TimeUnit.MICROSECONDS.sleep(1);
         }
     }
 
-    static void testCopyHotMethod() throws Exception
-    {
+    static void testCopyHotMethod() throws Exception {
         ByteBuf buf = Unpooled.buffer(1024);
-        for(int i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++)
             buf.writeByte(i);
         RestfulReq req = new RestfulReq(buf.array());
-        while (true)
-        {
-            byte [] msgReq = req.body();
+        while (true) {
+            byte[] msgReq = req.body();
         }
     }
 
-    static void testReferenceHotMethod() throws Exception
-    {
+    static void testReferenceHotMethod() throws Exception {
         ByteBuf buf = Unpooled.buffer(1024);
-        for(int i = 0; i < 1024; i++)
+        for (int i = 0; i < 1024; i++)
             buf.writeByte(i);
         RestfulReqV2 req = new RestfulReqV2(buf.array());
-        while (true)
-        {
-            byte [] msgReq = req.body();
+        while (true) {
+            byte[] msgReq = req.body();
         }
     }
 }

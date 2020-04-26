@@ -7,9 +7,8 @@ import java.util.concurrent.TimeUnit;
  */
 public class Shutdown1 {
 
-    public static void main(String [] args) throws Exception
-    {
-        Runtime.getRuntime().addShutdownHook(new java.lang.Thread(()->
+    public static void main(String[] args) throws Exception {
+        Runtime.getRuntime().addShutdownHook(new java.lang.Thread(() ->
         {
             System.out.println("ShutdownHook execute start...");
             System.out.println("Netty NioEventLoopGroup shutdownGracefully...");
@@ -19,7 +18,7 @@ public class Shutdown1 {
                 e.printStackTrace();
             }
             System.out.println("ShutdownHook execute end...");
-        },""));
+        }, ""));
         TimeUnit.SECONDS.sleep(7);
         System.exit(0);
     }

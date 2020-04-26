@@ -17,20 +17,18 @@ public class RestfulReqV2 {
 
     private HttpVersion version;
 
-    private byte [] body;
+    private final byte[] body;
 
-    public RestfulReqV2(byte [] body)
-    {
+    public RestfulReqV2(byte[] body) {
         this.body = body;
     }
 
 
-    public byte [] body()
-    {
+    public byte[] body() {
         return this.body;
     }
 
-    public byte [] bodyCopy() {
+    public byte[] bodyCopy() {
         if (this.body != null)
             return Arrays.copyOf(this.body, this.body.length);
         return null;

@@ -29,7 +29,7 @@ public class PooledByteBufClientHandler extends ChannelInboundHandlerAdapter {
 
     public PooledByteBufClientHandler() {
         firstMessage = Unpooled.buffer(PooledByteBufClient.SIZE);
-        for (int i = 0; i < firstMessage.capacity(); i ++) {
+        for (int i = 0; i < firstMessage.capacity(); i++) {
             firstMessage.writeByte((byte) i);
         }
     }
@@ -46,7 +46,7 @@ public class PooledByteBufClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) {
-       ctx.flush();
+        ctx.flush();
     }
 
     @Override

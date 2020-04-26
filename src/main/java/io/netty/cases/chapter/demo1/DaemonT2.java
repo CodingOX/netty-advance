@@ -14,11 +14,14 @@ public class DaemonT2 {
                 try {
                     TimeUnit.DAYS.sleep(Long.MAX_VALUE);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();}}
+                    e.printStackTrace();
+                }
+            }
         }, "Daemon-T");
 //        t.setDaemon(true);
         t.setDaemon(false);
         t.start();
         TimeUnit.SECONDS.sleep(15);
-        System.out.println("main线程退出，程序执行" +(System.nanoTime() - startTime)/1000/1000/1000 + " s");}
+        System.out.println("main线程退出，程序执行" + (System.nanoTime() - startTime) / 1000 / 1000 / 1000 + " s");
+    }
 }

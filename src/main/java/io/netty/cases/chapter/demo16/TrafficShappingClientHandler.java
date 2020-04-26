@@ -30,13 +30,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class TrafficShappingClientHandler extends ChannelInboundHandlerAdapter {
 
-    private static AtomicInteger SEQ = new AtomicInteger(0);
-
     static final byte[] ECHO_REQ = new byte[1024 * 1024];
-
     static final String DELIMITER = "$_";
-
     static ScheduledExecutorService scheduledExecutorService = Executors.newScheduledThreadPool(1);
+    private static final AtomicInteger SEQ = new AtomicInteger(0);
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
